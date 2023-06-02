@@ -9,28 +9,31 @@ import pandas as pd
 
 service = Service(r"chrome_driver/chromedrvier.exe")
 driver = webdriver.Chrome(service = service)
-driver.get('https://www.indeed.com/career/salaries/technology?from=whatwhere&b=technology')
 
-time.sleep(7)
-Button_element = driver.find_element(By.XPATH,"//h2[normalize-space()='Software Engineer']").click()
-time.sleep(5)
-Position = Button_element.text
+Roles = ['Front End Developer', 'IT Support', 'Product Owner', 'It Security Specialist', 'Full Stack Developer']
+Place = ['New-York--NY', 'Los-Angeles--CA', 'NJ', 'Detroit--MI', 'Chicago--IL', 'Houston--TX']
 
-time.sleep(2)
-element = driver.find_element(By.XPATH, "//div[@class='css-15psvrv eu4oa1w0']")
+# Create an empty dataframe to store the data
+data = pd.DataFrame(columns=['Role', 'Place', 'High Salary', 'Average Salary'])
 
-Pay = element.text
-
-time.sleep(2)
-data = {
-    Position : Pay
-}
-
-df = ps.DataFrame(data)
-
-file_path = 'data.csv'
-
-df.to_csv(file_path, index=False
-)
-time.sleep(10)
-
+for i in Roles:
+    for j in Place:
+        link = f'https://www.indeed.com/career/{i}/salaries/{j}'
+        time.sleep(5)
+        driver.get(link)
+        time.sleep(7)
+        High_element = driver.find_element(By.XPATH,"//div[@class='css-noncsw e37uo190']//div[2]")
+        H = High_element.text
+        hig = H.split()
+        High = hig[1] 
+        print(High)
+        time.sleep(2)
+        avg_element = driver.find_element(By.XPATH,"//div[@class='css-15b2pfd eu4oa1w0']")
+        avg = avg_element.text
+        Avg2 = avg.split()
+        Avrage = Avg2[1] 
+        print(Avrage)
+        time.sleep(2)
+        data.loc[len(data)] = [i, j, High, Avrage]
+        data.to_csv('data.csv', index=False)
+        time.sleep(7)
